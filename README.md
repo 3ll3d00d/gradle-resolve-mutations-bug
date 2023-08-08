@@ -1,6 +1,6 @@
 # gradle-resolve-mutations-bug
 
-Reproduces https://discuss.gradle.org/t/getbytype-or-withtype-failing-in-composite-build/42136
+Reproduces https://github.com/gradle/gradle/issues/25951
 
 ## Instructions
 
