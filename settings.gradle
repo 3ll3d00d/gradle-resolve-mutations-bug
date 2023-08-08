@@ -1,0 +1,5 @@
+rootProject.name = 'gradle-resolve-mutations-bug'
+include 'enabled', 'disabled'
+include 'enabled'
+include 'disabled'
+

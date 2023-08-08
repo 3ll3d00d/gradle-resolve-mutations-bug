@@ -1,0 +1,11 @@
+plugins {
+    id 'base'
+    id 'build-dashboard'
+}
+
+subprojects {
+    ext {
+        zipEnabledProp = objects.property(Boolean)
+    }
+    group = 'org.me'
+}

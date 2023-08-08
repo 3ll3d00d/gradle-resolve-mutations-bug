@@ -1,0 +1,65 @@
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+def zipEnable = ext.zipEnabledProp
+zipEnable.convention(Boolean.FALSE)
+
+sourceSets {
+    integrationTest
+}
+
+tasks.register('integrationTest', Test).configure {
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+}
+
+tasks.register('makeZip', Zip, {
+    dependsOn tasks.withType(Test).matching { t -> true }
+    archiveClassifier.set('data')
+    from layout.projectDirectory.dir('src/main')
+    includeEmptyDirs = true
+    onlyIf {
+        zipEnable.get()
+    }
+})
+
+def basePath = 'build/extra'
+def cleanOutput= tasks.register("cleanExtra_${project.name}", Delete, {
+    delete basePath
+    dependsOn tasks.check
+})
+
+tasks.register('extraZip', Zip, {
+    from 'src/test'
+    dependsOn cleanOutput
+})
+
+publishing {
+    publications {
+        extraPackage(MavenPublication) {
+            artifactId "${project.name}-extra"
+            artifact tasks.named('extraZip')
+        }
+    }
+}
+
+gradle.projectsEvaluated {
+    publishing {
+        publications {
+            fullPackage(MavenPublication) {
+                from components.java
+                if (project.ext.zipEnabledProp.get()) {
+                    artifact(tasks.named('makeZip'), {classifier = 'data'})
+                }
+            }
+        }
+    }
+}
+
+if (hasProperty("${project.name}.zipEnable")) {
+    logger.lifecycle("${project.name}.zipEnable is set")
+    zipEnable.set(Boolean.TRUE)
+}
