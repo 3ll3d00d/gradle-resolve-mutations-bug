@@ -1,11 +1,8 @@
 name: Run reproducer on each commit
 on: push
 jobs:
-  gradle:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+  failure:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-java@v2
@@ -16,6 +13,14 @@ jobs:
         name: failed build
         with:
           arguments: build publishToMavenLocal integrationTest
+  success:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
       - uses: gradle/gradle-build-action@v2
         name: successful build
         with:
