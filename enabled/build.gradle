@@ -3,12 +3,6 @@ plugins {
     id 'maven-publish'
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
-
 sourceSets {
     integrationTest
 }
@@ -18,12 +12,12 @@ tasks.register('integrationTest', Test).configure {
     classpath = sourceSets.integrationTest.runtimeClasspath
 }
 
-def cleanOutput= tasks.register("cleanExtra_${project.name}", Delete, {
+def cleanOutput= tasks.register("cleanExtra", Delete, {
     delete 'build/extra'
 })
 
 tasks.register('extraZip', Zip, {
-    from 'src/test'
+    from 'src/main'
     dependsOn cleanOutput
 })
 
