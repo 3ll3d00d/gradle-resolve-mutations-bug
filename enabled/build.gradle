@@ -9,9 +9,6 @@ java {
     }
 }
 
-def zipEnable = ext.zipEnabledProp
-zipEnable.convention(Boolean.FALSE)
-
 sourceSets {
     integrationTest
 }
@@ -36,20 +33,8 @@ publishing {
             artifactId "${project.name}-extra"
             artifact tasks.named('extraZip')
         }
-    }
-}
-
-gradle.projectsEvaluated {
-    publishing {
-        publications {
-            fullPackage(MavenPublication) {
-                from components.java
-            }
+        fullPackage(MavenPublication) {
+            from components.java
         }
     }
-}
-
-if (hasProperty("${project.name}.zipEnable")) {
-    logger.lifecycle("${project.name}.zipEnable is set")
-    zipEnable.set(Boolean.TRUE)
 }
